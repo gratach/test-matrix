@@ -12,10 +12,12 @@ import asyncio
 from pathlib import Path
 from nio import AsyncClient, AsyncClientConfig, JoinError, RoomMemberEvent
 from json import load
+from aioconsole import ainput
 
 BOTDIR = Path(__file__).parent / "botdir"
 LOGIN = BOTDIR / "login.json"
 STORE = BOTDIR / "store"
+        
 
 async def main():
 
@@ -42,17 +44,18 @@ async def main():
     client.user_id = login_info["user_id"]
     client.access_token = login_info["access_token"]
 
-    # Load the stored sync tokens
-    client.load_store()
-
-    # Upload keys if necessary
-    if client.should_upload_keys:
-        await client.keys_upload()
-
     # Syncronize with the server
-    resp = await client.sync()
-
+    resp = await client.sync()    # --. When this line gets moved here, the client.invited_rooms is empty even though the client is invited to rooms
+                                  #   |
+    # Load the stored sync tokens #   |
+    client.load_store()           #   |
+                                  #   |
+    # Upload keys if necessary    #   |
+    if client.should_upload_keys: #   |
+        await client.keys_upload()#   |
+                                  # <-*    
     # Iterate over all invitations up to this point
+    # For some reason the client.invited_rooms is empty
     for room_id in client.invited_rooms.keys():
         try:
             # Join the room
@@ -71,5 +74,7 @@ async def main():
         # If I am the only member, leave the room
         if len(members) == 1:
             await client.room_leave(room_id)
+
+    await client.close()
 
 asyncio.run(main())
