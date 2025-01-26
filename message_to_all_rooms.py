@@ -7,10 +7,10 @@ To work properly, the botdir folder must contain a login.json file with the logi
 This folder can be prepared and verified with the create_bot_dir.py script:
 https://github.com/gratach/create-matrix-nio-bot-dir/blob/ac12df13a8203c6289401296a7dcebae5da8842e/create_bot_dir.py
 
-A verry strange bug can be observed:
+A very strange bug can be observed:
 When this script is executed and the user chooses not to send a message, something gets broken.
 When the script is executed again and the user chooses to send a message, the LocalProtocolError "No such room with id ... found" is raised for all rooms.
-Now if something gets written in one of the rooms, the error disappears for this room and the script works as expected.
+Now, if something gets written in one of the rooms, the error disappears for this room, and the script works as expected.
 The script can be executed multiple times without any problems as long as the user chooses to send a message.
 When the user chooses not to send a message, the error appears again on the next execution.
 """
