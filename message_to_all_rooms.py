@@ -5,7 +5,7 @@ This script asks the user if it should send a message to all joined rooms.
 
 To work properly, the botdir folder must contain a login.json file with the login information (homeserver, user_id, device_id, access_token) and the store folder of the AsyncClient.
 This folder can be prepared and verified with the create_bot_dir.py script:
-https://github.com/gratach/create-matrix-nio-bot-dir/blob/ac12df13a8203c6289401296a7dcebae5da8842e/create_bot_dir.py
+https://github.com/gratach/create-matrix-nio-bot-dir/blob/52c5d79e2e63e301a946822a080f2bdc5acb36a3/create_bot_dir.py
 
 A very strange bug can be observed:
 When this script is executed and the user chooses not to send a message, something gets broken.
@@ -13,6 +13,9 @@ When the script is executed again and the user chooses to send a message, the Lo
 Now, if something gets written in one of the rooms, the error disappears for this room, and the script works as expected.
 The script can be executed multiple times without any problems as long as the user chooses to send a message.
 When the user chooses not to send a message, the error appears again on the next execution.
+
+See also the issue on GitHub:
+https://github.com/matrix-nio/matrix-nio/issues/385
 """
 
 import asyncio

@@ -5,7 +5,7 @@ This script joins all rooms the bot is invited to and leaves all rooms where the
 
 The botdir folder contains the login.json file with the login information (homeserver, user_id, device_id, access_token) and the store folder of the AsyncClient.
 It can be prepared and verified with the create_bot_dir.py script:
-https://github.com/gratach/create-matrix-nio-bot-dir/blob/ac12df13a8203c6289401296a7dcebae5da8842e/create_bot_dir.py
+https://github.com/gratach/create-matrix-nio-bot-dir/blob/52c5d79e2e63e301a946822a080f2bdc5acb36a3/create_bot_dir.py
 """
 
 import asyncio
