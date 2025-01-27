@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This script asks the user if it should send a message to all joined rooms.
+This script echoes all messages it receives.
 
 To work properly, the botdir folder must contain a login.json file with the login information (homeserver, user_id, device_id, access_token) and the store folder of the AsyncClient.
 This folder can be prepared and verified with the create_bot_dir.py script:
@@ -10,7 +10,7 @@ https://github.com/gratach/create-matrix-nio-bot-dir/blob/52c5d79e2e63e301a94682
 
 import asyncio
 from pathlib import Path
-from nio import AsyncClient, AsyncClientConfig, LocalProtocolError
+from nio import AsyncClient, AsyncClientConfig, RoomMessageText
 from json import load
 
 BOTDIR = Path(__file__).parent / "botdir"
@@ -52,25 +52,21 @@ async def main():
     # Syncronize with the server
     await client.sync(full_state=True) # full_state=True is necessary or else a bug occurs (see message_to_all_rooms_bug.py)
 
-    # Get all joined rooms
-    rooms = (await client.joined_rooms()).rooms
-    
-    # Send message to all joined rooms
-    for room_id in rooms:
-        try:
+    async def message_cb(room, event):
+        if event.sender != client.user_id and event.body:
             await client.room_send(
-                room_id,
-                "m.room.message",
-                {
+                room_id=room.room_id,
+                message_type="m.room.message",
+                content={
                     "msgtype": "m.text",
-                    "body": "Hi to all rooms!",
-                },
-                ignore_unverified_devices=True,
+                    "body": f"I received '{event.body}'",
+                }
             )
-        except LocalProtocolError as e:
-            print("No message could be sent to room", room_id)
-            print("Error: " + " ".join(e.args))
 
-    await client.close()
+    # Add the message callback
+    client.add_event_callback(message_cb, RoomMessageText)
+
+    # Wait for the client to receive messages
+    await client.sync_forever(timeout=30000) # timeout in milliseconds
 
 asyncio.run(main())
